@@ -14,13 +14,10 @@ export async function fetchItemsByUserId(userId) {
 }
 
 export async function updateCartItem(updateItem) {
-  const response = await axios.patch(
-    "http://localhost:8000/cart/" + updateItem.id,
-    updateItem,
-    {
-      "Content-Type": "application/json",
-    }
-  );
+  const { id, ...data } = updateItem;
+  const response = await axios.patch("http://localhost:8000/cart/" + id, data, {
+    "Content-Type": "application/json",
+  });
   return response;
 }
 
@@ -36,4 +33,22 @@ export async function deleteCartItem(deleteItemId) {
   } catch (err) {
     console.log("Error Occurred : ", err.message);
   }
+}
+
+export async function resetCart(userId) {
+  // get all the user items
+  const response = await fetchItemsByUserId(userId);
+  const items = response.data;
+
+  // delete each items
+  for (let item of items) {
+    try {
+      const id = await deleteCartItem(item.id);
+      console.log("cart deleted with this id : ", id);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  return { status: "success" };
 }

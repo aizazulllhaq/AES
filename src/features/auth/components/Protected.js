@@ -1,16 +1,14 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { selectLoggedInUser } from '../authSlice'
-import { Navigate } from 'react-router-dom';
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectLoggedInUser } from "../authSlice";
+import { Navigate } from "react-router-dom";
 
-export const Protected = ({children}) => {
+export const Protected = ({ children }) => {
+  const user = useSelector(selectLoggedInUser);
 
-    const user = useSelector(selectLoggedInUser);
+  if (!user) {
+    return <Navigate to={"/login"} replace={true}></Navigate>;
+  }
 
-    if(user){
-        return children
-    }
-
-    return <Navigate to={"/login"} replace={true}/>
-
-}
+  return children;
+};
